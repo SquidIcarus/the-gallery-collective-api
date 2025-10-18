@@ -14,10 +14,18 @@ User = get_user_model()
 class RegisterView(APIView):
     def post(self, request):
         user_to_create = UserSerializer(data=request.data)
-        print('USER CREATE', user_to_create)
         if user_to_create.is_valid():
-            user_to_create.save()
-            return Response({'message': 'Registration successful'}, status=status.HTTP_202_ACCEPTED)
+            user = user_to_create.save()
+
+            if user.is_artist:
+               from artists.models import Artist
+               Artist.objects.create(user=user)
+
+            return Response({
+                'message': 'Registration successful', 
+                'is_artist': user.is_artist
+            }, status=status.HTTP_201_CREATED)
+
         return Response(user_to_create.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 class LoginView(APIView):
@@ -37,5 +45,9 @@ class LoginView(APIView):
             settings.SECRET_KEY,
             algorithm='HS256'
         )
-        return Response({ 'token': token, 'message': f"Welcom back {user_to_login.username}"})
+        return Response({ 
+            'token': token, 
+            'message': f"Welcom back {user_to_login.username}",
+            'is_artist': user_to_login.is_artist
+        })
     
