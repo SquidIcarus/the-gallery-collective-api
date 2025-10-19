@@ -6,14 +6,15 @@ from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Artist
-from .serializers import ArtistSerializer
+from .serializers.common import ArtistSerializer
+from .serializers.populated import PopulatedArtistSerializer
 
 class ArtistListView(APIView):
     permission_classes = (IsAuthenticatedOrReadOnly, )
 
     def get(self, _request):
         artists = Artist.objects.all()
-        serialized_artists = ArtistSerializer(artists, many=True)
+        serialized_artists = PopulatedArtistSerializer(artists, many=True)
         return Response(serialized_artists.data, status=status.HTTP_200_OK)
 
 class ArtistDetailView(APIView):
@@ -29,7 +30,7 @@ class ArtistDetailView(APIView):
 
     def get(self, _request, pk):
         artist = self.get_artist(pk=pk)
-        serialized_artist = ArtistSerializer(artist)
+        serialized_artist = PopulatedArtistSerializer(artist)
         return Response(serialized_artist.data, status=status.HTTP_200_OK)
 
  
