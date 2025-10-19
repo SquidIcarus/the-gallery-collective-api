@@ -50,6 +50,33 @@ class ArtworkDetailView(APIView):
         serialized_artwork = ArtworkSerializer(artwork)
         return Response(serialized_artwork.data, status=status.HTTP_200_OK)
 
+    def put(self, request, pk):
+        artwork_to_update = self.get_artwork(pk=pk)
+
+        if artwork_to_update.artist.user != request.user:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        updated_artwork = ArtworkSerializer(
+            artwork_to_update,
+            data=request.data,
+            partial=True
+        )
+
+        if updated_artwork.is_valid():
+            updated_artwork.save()
+            return Response(updated_artwork.data, status=status.HTTP_202_ACCEPTED)
+
+        return Response(
+            updated_artwork.errors,
+            status=status.HTTP_422_UNPROCESSABLE_ENTITY
+        )
+
+
+    
+
 
 
 
