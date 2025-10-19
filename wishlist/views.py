@@ -42,7 +42,7 @@ class WishlistView(APIView):
             artwork=artwork
         )
         serialized_wishlist = WishlistSerializer(wishlist_entry)
-        return Response(serialized_wishlist.data, statu=status.HTTP_201_CREATED)
+        return Response(serialized_wishlist.data, status=status.HTTP_201_CREATED)
 
 class WishlistDetailView(APIView):
     permission_classes = (IsAuthenticated,)
