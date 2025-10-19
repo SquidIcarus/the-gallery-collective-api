@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/auth/', include('authentication.urls')),
     path('api/artists/', include('artists.urls')),
     path('api/artworks/', include('artworks.urls')),
+    path('api/events/', include('events.urls')),
 ]
 
 if settings.DEBUG:
