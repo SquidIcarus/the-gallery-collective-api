@@ -68,8 +68,10 @@ class ArtistDetailView(APIView):
                 {'error': 'Unauthorized'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
+        user_to_delete = artist_to_delete.user
 
         artist_to_delete.delete()
+        user_to_delete.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
