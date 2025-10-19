@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'authentication',
     'artists',
+    'artworks',
 ]
 
 MIDDLEWARE = [
