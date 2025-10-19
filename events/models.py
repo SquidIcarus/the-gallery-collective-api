@@ -6,10 +6,12 @@ class Event(models.Model):
 
     title = models.CharField(max_length=200)
     description = models.TextField()
-    date = models.DateTimeField()
+    date = models.DateField()
+    time = models.TimeField()
     location = models.CharField(max_length=300)
     image = models.ImageField(upload_to='events/')
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     artist = models.ForeignKey(
         "artists.Artist",
         related_name="events",
