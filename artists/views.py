@@ -33,6 +33,35 @@ class ArtistDetailView(APIView):
         serialized_artist = PopulatedArtistSerializer(artist)
         return Response(serialized_artist.data, status=status.HTTP_200_OK)
 
+    def put(self, request, pk):
+        artist_to_update = self.get_artist(pk=pk)
+        
+        if artist_to_update.user != request.user:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        updated_artist = ArtistSerializer(
+            artist_to_update,
+            data=request.data,
+            partial=True
+        )
+
+        if updated_artist.is_valid():
+            updated_artist.save()
+            return Response(
+                PopulatedArtistSerializer(artist_to_update).data,
+                status=status.HTTP_202_ACCEPTED
+            )
+
+        return Response(
+            updated_artist.errors,
+            status=status.HTTP_422_UNPROCESSABLE_ENTITY
+        )
+
+        
+
  
 
 
