@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'authentication',
     'artists',
     'artworks',
+    'events',
 ]
 
 MIDDLEWARE = [
