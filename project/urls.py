@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/artists/', include('artists.urls')),
     path('api/artworks/', include('artworks.urls')),
     path('api/events/', include('events.urls')),
+    path('api/wishlist/', include('wishlist.urls')),
 ]
 
 if settings.DEBUG:
