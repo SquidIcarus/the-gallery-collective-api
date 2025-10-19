@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'artworks',
     'events',
     'wishlist',
+    'event_interest',
 ]
 
 MIDDLEWARE = [
