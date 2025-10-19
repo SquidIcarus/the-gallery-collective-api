@@ -7,6 +7,7 @@ from rest_framework.exceptions import NotFound
 
 from .models import Wishlist
 from .serializers import WishlistSerializer
+from .serializers.populated import PopulatedWishlistSerializer
 from artworks.models import Artwork
 
 class WishlistView(APIView):
@@ -14,7 +15,7 @@ class WishlistView(APIView):
 
     def get(self, request):
         wishlists = Wishlist.objects.filter(user=request.user)
-        serialized_wishlists = WishlistSerializer(wishlists, many=True)
+        serialized_wishlists = PopulatedWishlistSerializer(wishlists, many=True)
         return Response(serialized_wishlists.data, status=status.HTTP_200_OK)
 
     def post(self, request):
