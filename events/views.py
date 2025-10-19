@@ -32,7 +32,7 @@ class EventListView(APIView):
         except Exception as e:
             return Response(
                 e.__dict__ if e. __dict__ else str(e),
-                status=status.HTTP_422_UNPORCESSABLE_ENTITY
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY
             )
 
 class EventDetailView(APIView):
@@ -48,4 +48,28 @@ class EventDetailView(APIView):
         event = self.get_event(pk=pk)
         serialized_event = EventSerializer(event)
         return Response(serialized_event.data, status=status.HTTP_200_OK)
+
+    def put(self, request, pk):
+        event_to_update = self.get_event(pk=pk)
+
+        if event_to_update.artist.user != request.user:
+            return Response(
+                {'error': 'Unauthorized'},
+                status = status.HTTP_401_UNAUTHORIZED
+            )
+
+        updated_event = EventSerializer(
+            event_to_update,
+            data=request.data,
+            partial=True
+        )
+
+        if updated_event.is_valid():
+            updated_event.save()
+            return Response(updated_event.data, status=status.HTTP_202_ACCEPTED)
+
+        return Response(
+            updated_event.errors,
+            status=status.HTTP_422_UNPROCESSABLE_ENTITY
+        )
 
