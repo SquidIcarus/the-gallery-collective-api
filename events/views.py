@@ -73,3 +73,15 @@ class EventDetailView(APIView):
             status=status.HTTP_422_UNPROCESSABLE_ENTITY
         )
 
+    def delete(self, request, pk):
+        event_to_delete = self.get_event(pk=pk)
+
+        if event_to_delete.artist.user != request.user:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+
+        event_to_delete.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
