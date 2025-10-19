@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Event
@@ -33,3 +34,18 @@ class EventListView(APIView):
                 e.__dict__ if e. __dict__ else str(e),
                 status=status.HTTP_422_UNPORCESSABLE_ENTITY
             )
+
+class EventDetailView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+
+    def get_event(self, pk):
+        try:
+            return Event.objects.get(pk=pk)
+        except Event.DoesNotExist:
+            raise NotFound(detail="Can't find that event")
+
+    def get(self, _request, pk):
+        event = self.get_event(pk=pk)
+        serialized_event = EventSerializer(event)
+        return Response(serialized_event.data, status=status.HTTP_200_OK)
+
