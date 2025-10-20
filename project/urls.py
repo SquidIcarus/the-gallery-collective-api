@@ -27,6 +27,7 @@ urlpatterns = [
     path('api/events/', include('events.urls')),
     path('api/wishlist/', include('wishlist.urls')),
     path('api/event-interest/', include('event_interest.urls')),
+    path('api/comments/', include('comments.urls')),
 ]
 
 if settings.DEBUG:
