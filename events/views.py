@@ -22,9 +22,10 @@ class EventListView(APIView):
                 {'error': 'Only artists can create events'},
                 status=status.HTTP_403_FORBIDDEN
             )
-
-        request.data['artist'] = request.user.artist.user_id
-        event_to_add = EventSerializer(data=request.data)
+        data = request.data.dict()
+        data['image'] = request.data.get('image')
+        data['artist'] = request.user.artist.user_id
+        event_to_add = EventSerializer(data=data)
         try:
             event_to_add.is_valid(raise_exception=True)
             event_to_add.save()
