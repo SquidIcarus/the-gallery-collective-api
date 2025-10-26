@@ -7,13 +7,14 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Artwork
 from .serializers.common import ArtworkSerializer
+from .serializers.populated import PopulatedArtworkSerializer
 
 class ArtworkListView(APIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get(self, _request):
         artworks = Artwork.objects.all()
-        serialized_artworks = ArtworkSerializer(artworks, many=True)
+        serialized_artworks = PopulatedArtworkSerializer(artworks, many=True)
         return Response(serialized_artworks.data, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -47,7 +48,7 @@ class ArtworkDetailView(APIView):
 
     def get(self, _request, pk):
         artwork = self.get_artwork(pk=pk)
-        serialized_artwork = ArtworkSerializer(artwork)
+        serialized_artwork = PopulatedArtworkSerializer(artwork)
         return Response(serialized_artwork.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):

@@ -11,6 +11,7 @@ import jwt
 
 User = get_user_model()
 
+
 class RegisterView(APIView):
     def post(self, request):
         user_to_create = UserSerializer(data=request.data)
@@ -18,18 +19,19 @@ class RegisterView(APIView):
             user = user_to_create.save()
 
             if user.is_artist:
-               from artists.models import Artist
-               Artist.objects.create(user=user)
+                from artists.models import Artist
+                Artist.objects.create(user=user)
 
             return Response({
-                'message': 'Registration successful', 
+                'message': 'Registration successful',
                 'is_artist': user.is_artist
             }, status=status.HTTP_201_CREATED)
 
         return Response(user_to_create.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
+
 class LoginView(APIView):
-    def post(self, request):   
+    def post(self, request):
         email = request.data.get('email')
         password = request.data.get('password')
         try:
@@ -38,16 +40,15 @@ class LoginView(APIView):
             raise PermissionDenied(detail='Invalid Credentials')
         if not user_to_login.check_password(password):
             raise PermissionDenied(detail='Invalid Credentials')
-        
+
         dt = datetime.now() + timedelta(days=7)
         token = jwt.encode(
             {'sub': str(user_to_login.id), 'exp': int(dt.strftime('%s'))},
             settings.SECRET_KEY,
             algorithm='HS256'
         )
-        return Response({ 
-            'token': token, 
+        return Response({
+            'token': token,
             'message': f"Welcom back {user_to_login.username}",
             'is_artist': user_to_login.is_artist
         })
-    
