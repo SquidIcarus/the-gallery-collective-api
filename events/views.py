@@ -7,13 +7,14 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Event
 from .serializers.common import EventSerializer
+from .serializers.populated import PopulatedEventSerializer
 
 class EventListView(APIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get(self, _request):
         events = Event.objects.all()
-        serialized_events = EventSerializer(events, many=True)
+        serialized_events = PopulatedEventSerializer(events, many=True)
         return Response(serialized_events.data, status=status.HTTP_200_OK)
 
     def post(self, request):
@@ -47,7 +48,7 @@ class EventDetailView(APIView):
 
     def get(self, _request, pk):
         event = self.get_event(pk=pk)
-        serialized_event = EventSerializer(event)
+        serialized_event = PopulatedEventSerializer(event)
         return Response(serialized_event.data, status=status.HTTP_200_OK)
 
     def put(self, request, pk):

@@ -1,1 +1,2 @@
 from .common import EventSerializer
+from artists.serializers.populated import PopulatedArtistSerializer
