@@ -11,7 +11,6 @@ import jwt
 
 User = get_user_model()
 
-
 class RegisterView(APIView):
     def post(self, request):
         user_to_create = UserSerializer(data=request.data)
@@ -43,12 +42,18 @@ class LoginView(APIView):
 
         dt = datetime.now() + timedelta(days=7)
         token = jwt.encode(
-            {'sub': str(user_to_login.id), 'exp': int(dt.strftime('%s'))},
+            {
+                'sub': str(user_to_login.id), 
+                'exp': int(dt.strftime('%s')),
+                'id': user_to_login.id,
+                'username': user_to_login.username,
+                'email': user_to_login.email,
+                'is_artist': user_to_login.is_artist,
+            },
             settings.SECRET_KEY,
             algorithm='HS256'
         )
         return Response({
             'token': token,
-            'message': f"Welcom back {user_to_login.username}",
-            'is_artist': user_to_login.is_artist
+            'message': f"Welcome back {user_to_login.username}",
         })
