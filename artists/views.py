@@ -6,6 +6,10 @@ from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Artist
+from artworks.models import Artwork
+from events.models import Event
+from artworks.serializers.populated import PopulatedArtworkSerializer
+from events.serializers.populated import PopulatedEventSerializer
 from .serializers.common import ArtistSerializer
 from .serializers.populated import PopulatedArtistSerializer
 
@@ -73,6 +77,34 @@ class ArtistDetailView(APIView):
         artist_to_delete.delete()
         user_to_delete.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class ArtistArtworksView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+
+    def get(self, _request, pk):
+        try:
+            artworks = Artwork.objects.filter(artist__user__id=pk)
+            serialized_artworks = PopulatedArtworkSerializer(artworks, many=True)
+            return Response(serialized_artworks.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+class ArtistEventsView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+
+    def get(self, _request, pk):
+        try:
+            events = Event.objects.filter(artist__user__id=pk)
+            serialized_events = PopulatedEventSerializer(events, many=True)
+            return Response(serialized_events.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                {'error': str(e)},
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 
 
