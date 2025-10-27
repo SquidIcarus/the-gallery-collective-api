@@ -13,4 +13,9 @@ class Artist(models.Model):
     bio = models.TextField(blank=True)
     website = models.URLField(blank=True)
     instagram = models.CharField(max_length=300, blank=True)
+    profile_image = models.ImageField(
+        upload_to='profile_images/',
+        blank=True,
+        null=True
+    )
     date_joined = models.DateTimeField(auto_now_add=True)
